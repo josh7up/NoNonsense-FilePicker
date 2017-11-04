@@ -6,7 +6,6 @@
 
 package com.nononsenseapps.filepicker.sample.dropbox;
 
-import android.databinding.repacked.apache.commons.io.FilenameUtils;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +14,7 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.Utils;
 
 
 public class DropboxFilePickerActivity
@@ -54,6 +54,6 @@ public class DropboxFilePickerActivity
 
     @Override
     public boolean fileVisible(DropboxAPI.Entry item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(FilenameUtils.getExtension(item.fileName()).toLowerCase());
+        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.fileName()).toLowerCase());
     }
 }

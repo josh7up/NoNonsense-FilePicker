@@ -7,7 +7,6 @@
 package com.nononsenseapps.filepicker;
 
 import android.annotation.SuppressLint;
-import android.databinding.repacked.apache.commons.io.FilenameUtils;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 
@@ -34,6 +33,6 @@ public class FilePickerActivity extends AbstractFilePickerActivity<File> {
 
     @Override
     public boolean fileVisible(File item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(FilenameUtils.getExtension(item.getName()).toLowerCase());
+        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
     }
 }

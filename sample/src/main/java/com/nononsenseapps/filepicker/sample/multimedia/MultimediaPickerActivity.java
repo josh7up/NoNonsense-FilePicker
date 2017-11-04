@@ -6,12 +6,12 @@
 
 package com.nononsenseapps.filepicker.sample.multimedia;
 
-import android.databinding.repacked.apache.commons.io.FilenameUtils;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.Utils;
 
 import java.io.File;
 
@@ -38,6 +38,6 @@ public class MultimediaPickerActivity extends AbstractFilePickerActivity<File> {
 
     @Override
     public boolean fileVisible(File item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(FilenameUtils.getExtension(item.getName()).toLowerCase());
+        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
     }
 }

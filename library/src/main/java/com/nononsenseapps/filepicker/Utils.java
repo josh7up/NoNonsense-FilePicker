@@ -117,4 +117,60 @@ public class Utils {
         }
         return result;
     }
+
+    /**
+     * Adapted from Apache Commons library: https://commons.apache.org/proper/commons-io/
+     *
+     * Gets the extension of a filename.
+     * <p>
+     * This method returns the textual part of the filename after the last dot.
+     * There must be no directory separator after the dot.
+     * <pre>
+     * foo.txt      --&gt; "txt"
+     * a/b/c.jpg    --&gt; "jpg"
+     * a/b.txt/c    --&gt; ""
+     * a/b/c        --&gt; ""
+     * </pre>
+     * <p>
+     * The output will be the same irrespective of the machine that the code is running on.
+     *
+     * @param filename the filename to retrieve the extension of.
+     * @return the extension of the file or an empty string if none exists or {@code null}
+     * if the filename is {@code null}.
+     */
+    public static String getExtension(final String filename) {
+        if (filename == null) {
+            return null;
+        }
+        final int index = indexOfExtension(filename);
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
+    }
+
+    /**
+     * Adapted from Apache Commons library: https://commons.apache.org/proper/commons-io/
+     *
+     * Returns the index of the last extension separator character, which is a dot.
+     * <p>
+     * This method also checks that there is no directory separator after the last dot.
+     * </p>
+     * <p>
+     * The output will be the same irrespective of the machine that the code is running on.
+     * </p>
+     *
+     * @param filename
+     *            the filename to find the last extension separator in, null returns -1
+     * @return the index of the last extension separator character, or -1 if there is no such character
+     */
+    public static int indexOfExtension(final String filename) {
+        if (filename == null) {
+            return -1;
+        }
+        final int extensionPos = filename.lastIndexOf(".");
+        final int lastSeparator = filename.lastIndexOf("/");
+        return lastSeparator > extensionPos ? -1 : extensionPos;
+    }
 }

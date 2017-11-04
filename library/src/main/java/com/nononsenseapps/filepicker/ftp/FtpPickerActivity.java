@@ -6,12 +6,12 @@ package com.nononsenseapps.filepicker.ftp;
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import android.databinding.repacked.apache.commons.io.FilenameUtils;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.Utils;
 
 import org.apache.commons.net.ftp.FTP;
 
@@ -67,6 +67,6 @@ public class FtpPickerActivity extends AbstractFilePickerActivity<FtpFile> {
 
     @Override
     public boolean fileVisible(FtpFile item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(FilenameUtils.getExtension(item.getName()).toLowerCase());
+        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
     }
 }

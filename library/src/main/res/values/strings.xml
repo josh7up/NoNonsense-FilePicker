@@ -12,4 +12,5 @@
     <string name="nnf_need_valid_filename">Please enter or select a valid filename</string>
     <string name="nnf_permission_external_write_denied">Permisson to access filesystem denied</string>
     <string name="nnf_filename">Filename</string>
+    <string name="file_size_template">%1$s KB</string>
 </resources>

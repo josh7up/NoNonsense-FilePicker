@@ -17,6 +17,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.content.Loader;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.util.SortedListAdapterCallback;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.File;
@@ -32,6 +35,11 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
     private File mRequestedPath = null;
 
     public FilePickerFragment() {
+    }
+
+    @Override
+    protected int getBreadcrumbPathViewLayoutResourceId() {
+        return R.layout.file_breadcrumb_path_view;
     }
 
     /**
@@ -101,7 +109,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
             if (PackageManager.PERMISSION_GRANTED == grantResults[0]) {
                 // Do refresh
                 if (mRequestedPath != null) {
-                    refresh(mRequestedPath);
+                    refresh(mRequestedPath, true);
                 }
             } else {
                 Toast.makeText(getContext(), R.string.nnf_permission_external_write_denied,
@@ -133,6 +141,12 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
     @Override
     public String getName(@NonNull File path) {
         return path.getName();
+    }
+
+    @NonNull
+    @Override
+    public long getFileSize(@NonNull File path) {
+        return path.length();
     }
 
     /**
@@ -307,7 +321,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
         File folder = new File(mCurrentPath, name);
 
         if (folder.mkdir()) {
-            refresh(folder);
+            refresh(folder, false);
         } else {
             Toast.makeText(getActivity(), R.string.nnf_create_folder_error,
                     Toast.LENGTH_SHORT).show();

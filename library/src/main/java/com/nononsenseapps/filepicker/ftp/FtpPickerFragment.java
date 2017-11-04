@@ -1,10 +1,10 @@
+package com.nononsenseapps.filepicker.ftp;
+
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
-package com.nononsenseapps.filepicker.sample.ftp;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,31 +15,31 @@ import android.support.v4.content.Loader;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.util.SortedListAdapterCallback;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
-import com.nononsenseapps.filepicker.sample.R;
+import com.nononsenseapps.filepicker.R;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This example allows you to browse the files on an FTP-server
  */
 public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
 
-    private static final String KEY_FTP_SERVER = "KEY_FTP_SERVER";
-    private static final String KEY_FTP_PORT = "KEY_FTP_PORT";
-    private static final String KEY_FTP_USERNAME = "KEY_FTP_USERNAME";
-    private static final String KEY_FTP_PASSWORD = "KEY_FTP_PASSWORD";
-    private static final String KEY_FTP_ROOTDIR = "KEY_FTP_ROOTDIR";
+    public static final String KEY_FTP_SERVER = "KEY_FTP_SERVER";
+    public static final String KEY_FTP_PORT = "KEY_FTP_PORT";
+    public static final String KEY_FTP_USERNAME = "KEY_FTP_USERNAME";
+    public static final String KEY_FTP_PASSWORD = "KEY_FTP_PASSWORD";
+    public static final String KEY_FTP_ROOTDIR = "KEY_FTP_ROOTDIR";
+    public static final String KEY_VISIBLE_FILE_EXTENSIONS = "KEY_VISIBLE_FILE_EXTENSIONS";
     private static final String TAG = "NoNonsenseFtp";
     private final FTPClient ftp;
     private String server;
@@ -48,11 +48,15 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
     private String password;
     private boolean loggedIn = false;
     private String rootDir = "/";
-    private ProgressBar progressBar;
 
     public FtpPickerFragment() {
         super();
         ftp = new FTPClient();
+    }
+
+    @Override
+    protected int getBreadcrumbPathViewLayoutResourceId() {
+        return R.layout.ftp_file_breadcrumb_path_view;
     }
 
     public static AbstractFilePickerFragment<FtpFile> newInstance(String startPath, int mode,
@@ -94,16 +98,6 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
         this.rootDir = args.getString(KEY_FTP_ROOTDIR) != null ? args.getString(KEY_FTP_ROOTDIR) : "/";
     }
 
-    @Override
-    protected View inflateRootView(LayoutInflater inflater, ViewGroup container) {
-        // Load the specific layout we created for dropbox/ftp
-        View view = inflater.inflate(R.layout.fragment_loading_filepicker, container, false);
-        // And bind the progress bar
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-
-        return view;
-    }
-
     /**
      * Return true if the path is a directory and not a file.
      */
@@ -119,6 +113,12 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
     @Override
     public String getName(@NonNull FtpFile path) {
         return path.getName();
+    }
+
+    @NonNull
+    @Override
+    public long getFileSize(@NonNull FtpFile path) {
+        return path.getFileSize();
     }
 
     /**
@@ -148,10 +148,7 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
     @NonNull
     @Override
     public FtpFile getParent(@NonNull FtpFile from) {
-        if (from.getPath().equals(getRoot().getPath())) {
-            // Already at root, we can't go higher
-            return from;
-        } else if (from.getParentFile() != null) {
+        if (from.getParentFile() != null) {
             return from.getParentFile();
         } else {
             return from;
@@ -265,9 +262,9 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
                         for (FTPFile f : ftp.listFiles(mCurrentPath.getPath())) {
                             FtpFile file;
                             if (f.isDirectory()) {
-                                file = new FtpDir(mCurrentPath, f.getName());
+                                file = new FtpDir(mCurrentPath, f.getName(), f.getSize());
                             } else {
-                                file = new FtpFile(mCurrentPath, f.getName());
+                                file = new FtpFile(mCurrentPath, f.getName(), f.getSize());
                             }
                             if (isItemVisible(file)) {
                                 sortedList.add(file);
@@ -297,19 +294,6 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
                 forceLoad();
             }
         };
-    }
-
-    /**
-     * Used by the list to determine whether a file should be displayed or not.
-     * Default behavior is to always display folders. If files can be selected,
-     * then files are also displayed. Override this method to enable other
-     * filtering behaviour, like only displaying files with specific extensions (.zip, .txt, etc).
-     *
-     * @param file to maybe add. Can be either a directory or file.
-     * @return True if item should be added to the list, false otherwise
-     */
-    protected boolean isItemVisible(final FtpFile file) {
-        return file.isDirectory() || (mode == MODE_FILE || mode == MODE_FILE_AND_DIR);
     }
 
     /**
@@ -375,7 +359,7 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
      * @param name The name of the folder the user wishes to create.
      */
     public FtpFile onNewFolderAsync(String name) {
-        FtpDir folder = new FtpDir(mCurrentPath, name);
+        FtpDir folder = new FtpDir(mCurrentPath, name, 0);
         try {
             if (ftp.makeDirectory(folder.getPath())) {
                 // Success, return result

@@ -1,26 +1,29 @@
+package com.nononsenseapps.filepicker.ftp;
+
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package com.nononsenseapps.filepicker.sample.ftp;
+import org.apache.commons.net.ftp.FTPFile;
 
 public class FtpFile {
 
     public static final char separatorChar = '/';
     public static final String separator = "/";
     private String path;
+    private long fileSize;
 
-    public FtpFile(FtpFile dir, String name) {
-        this(dir == null ? null : dir.getPath(), name);
+    public FtpFile(FtpFile dir, String name, long fileSize) {
+        this(dir == null ? null : dir.getPath(), name, fileSize);
     }
 
     public FtpFile(String path) {
         this.path = fixSlashes(path);
     }
 
-    public FtpFile(String dirPath, String name) {
+    public FtpFile(String dirPath, String name, long fileSize) {
         if (name == null) {
             throw new NullPointerException("name == null");
         }
@@ -31,6 +34,7 @@ public class FtpFile {
         } else {
             this.path = fixSlashes(join(dirPath, name));
         }
+        this.fileSize = fileSize;
     }
 
     public static String fixSlashes(String origPath) {
@@ -92,7 +96,7 @@ public class FtpFile {
         if (tempParent == null) {
             return null;
         }
-        return new FtpFile(tempParent);
+        return new FtpDir(tempParent);
     }
 
     /**
@@ -108,5 +112,9 @@ public class FtpFile {
 
     public boolean isFile() {
         return true;
+    }
+
+    public long getFileSize() {
+        return fileSize;
     }
 }

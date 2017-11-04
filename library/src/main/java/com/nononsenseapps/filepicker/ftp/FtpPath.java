@@ -1,28 +1,27 @@
+package com.nononsenseapps.filepicker.ftp;
+
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package com.nononsenseapps.filepicker.sample.ftp;
 
 import android.support.annotation.NonNull;
-
-import org.apache.commons.net.ftp.FTPFile;
 
 /**
  * Adds path information to FtpFile objects
  */
-public class FTPPath {
+public class FtpPath {
     public final String path;
-    public final FTPFile file;
+    public final FtpFile file;
 
-    public FTPPath(@NonNull String path, @NonNull FTPFile file) {
+    public FtpPath(@NonNull String path, @NonNull FtpFile file) {
         this.path = path;
         this.file = file;
     }
 
-    public FTPPath(@NonNull FTPPath mCurrentPath, @NonNull FTPFile file) {
+    public FtpPath(@NonNull FtpPath mCurrentPath, @NonNull FtpFile file) {
         this.file = file;
         if (mCurrentPath.path.endsWith("/")) {
             this.path = mCurrentPath + file.getName();

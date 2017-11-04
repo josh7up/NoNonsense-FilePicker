@@ -24,7 +24,8 @@
         <!-- Sample app -->
         <activity
             android:name=".NoNonsenseFilePicker"
-            android:label="@string/title_activity_no_nonsense_file_picker">
+            android:label="@string/title_activity_no_nonsense_file_picker"
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -129,11 +130,11 @@
 
         <!-- FtpPickers -->
         <activity
-            android:name=".ftp.FtpPickerActivity"
+            android:name=".ftp.SampleFtpPickerActivity"
             android:label="@string/title_activity_no_nonsense_file_picker"
             android:theme="@style/SampleTheme" />
         <activity
-            android:name=".ftp.FtpPickerActivity2"
+            android:name=".ftp.SampleFtpPickerActivity2"
             android:label="@string/title_activity_no_nonsense_file_picker"
             android:theme="@style/SampleThemeLight" />
 

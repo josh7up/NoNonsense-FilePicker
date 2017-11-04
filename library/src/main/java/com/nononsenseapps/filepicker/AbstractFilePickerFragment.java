@@ -30,14 +30,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Stack;
 
 import static com.nononsenseapps.filepicker.Utils.appendPath;
 
@@ -83,7 +88,6 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     protected boolean singleClick = false;
     protected OnFilePickedListener mListener;
     protected FileItemAdapter<T> mAdapter = null;
-    protected TextView mCurrentDirView;
     protected EditText mEditTextFileName;
     protected RecyclerView recyclerView;
     protected LinearLayoutManager layoutManager;
@@ -93,6 +97,11 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     protected boolean isLoading = false;
     protected View mNewFileButtonContainer = null;
     protected View mRegularButtonContainer = null;
+
+    protected ProgressBar progressBar;
+    private AbstractBreadcrumbPathView<T> mBreadcrumbPathView;
+    private Stack<T> mPreviousPathStack = new Stack<>();
+    protected FileExtensionFilter<T> fileExtensionFilter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -226,18 +235,37 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
             }
         });
 
-        mCurrentDirView = (TextView) view.findViewById(R.id.nnf_current_dir);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+
+        mBreadcrumbPathView = (AbstractBreadcrumbPathView<T>) view.findViewById(R.id.breadcrumbPathView);
+        mBreadcrumbPathView.setBreadcrumbListener(new BreadcrumbListener<T>() {
+            @Override
+            public void onBreadcrumbClicked(T path) {
+                goToDir(path, true);
+            }
+        });
+
         // Restore state
-        if (mCurrentPath != null && mCurrentDirView != null) {
-            mCurrentDirView.setText(getFullPath(mCurrentPath));
+        if (mCurrentPath != null && mBreadcrumbPathView != null) {
+            mBreadcrumbPathView.setPath(getFullPath(mCurrentPath));
         }
 
         return view;
     }
 
-    protected View inflateRootView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate( R.layout.nnf_fragment_filepicker, container, false);
+    private View inflateRootView(LayoutInflater inflater, ViewGroup container) {
+        View view = inflater.inflate(R.layout.nnf_fragment_filepicker, container, false);
+        //Toolbar toolbar = (Toolbar) view.findViewById(R.id.nnf_picker_toolbar);
+        //toolbar.addView(createBreadcrumbPathView());
+
+        ViewStub stub = (ViewStub) view.findViewById(R.id.breadcrumbViewStub);
+        stub.setLayoutResource(getBreadcrumbPathViewLayoutResourceId());
+        stub.inflate();
+
+        return view;
     }
+
+    protected abstract int getBreadcrumbPathViewLayoutResourceId();
 
     /**
      * Checks if a divider drawable has been defined in the current theme. If it has, will apply
@@ -408,6 +436,11 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (getActivity() instanceof FileExtensionFilter) {
+            fileExtensionFilter = (FileExtensionFilter<T>) getActivity();
+        }
+
         // Only if we have no state
         if (mCurrentPath == null) {
             if (savedInstanceState != null) {
@@ -456,7 +489,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
         if (mCurrentPath == null) {
             mCurrentPath = getRoot();
         }
-        refresh(mCurrentPath);
+        refresh(mCurrentPath, false);
     }
 
     /**
@@ -512,6 +545,10 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
         mListener = null;
     }
 
+    protected void refresh(@NonNull T nextPath) {
+        refresh(nextPath, true);
+    }
+
     /**
      * Refreshes the list. Call this when current path changes. This method also checks
      * if permissions are granted and requests them if necessary. See hasPermission()
@@ -520,8 +557,11 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
      *
      * @param nextPath path to list files for
      */
-    protected void refresh(@NonNull T nextPath) {
+    protected void refresh(@NonNull T nextPath, boolean rememberPrevious) {
         if (hasPermission(nextPath)) {
+            if (rememberPrevious && mCurrentPath != null && nextPath != null && !mCurrentPath.equals(nextPath)) {
+                mPreviousPathStack.push(mCurrentPath);
+            }
             mCurrentPath = nextPath;
             isLoading = true;
             getLoaderManager()
@@ -580,8 +620,8 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
         mCheckedVisibleViewHolders.clear();
         mFiles = data;
         mAdapter.setList(data);
-        if (mCurrentDirView != null) {
-            mCurrentDirView.setText(getFullPath(mCurrentPath));
+        if (mBreadcrumbPathView != null) {
+            mBreadcrumbPathView.setPath(getFullPath(mCurrentPath));
         }
         // Stop loading now to avoid a refresh clearing the user's selections
         getLoaderManager().destroyLoader( 0 );
@@ -626,20 +666,14 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v;
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.nnf_filepicker_listitem, parent, false);
         switch (viewType) {
             case LogicHandler.VIEWTYPE_HEADER:
-                v = LayoutInflater.from(getActivity()).inflate(R.layout.nnf_filepicker_listitem_dir,
-                        parent, false);
                 return new HeaderViewHolder(v);
             case LogicHandler.VIEWTYPE_CHECKABLE:
-                v = LayoutInflater.from(getActivity()).inflate(R.layout.nnf_filepicker_listitem_checkable,
-                        parent, false);
                 return new CheckableViewHolder(v);
             case LogicHandler.VIEWTYPE_DIR:
             default:
-                v = LayoutInflater.from(getActivity()).inflate(R.layout.nnf_filepicker_listitem_dir,
-                        parent, false);
                 return new DirViewHolder(v);
         }
     }
@@ -652,8 +686,26 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     @Override
     public void onBindViewHolder(@NonNull DirViewHolder vh, int position, @NonNull T data) {
         vh.file = data;
-        vh.icon.setVisibility(isDir(data) ? View.VISIBLE : View.GONE);
+        if (isDir(data)) {
+            vh.icon.setVisibility(View.VISIBLE);
+            vh.layoutContainer.setPadding(0, 0, 0, 0);
+        } else {
+            vh.icon.setVisibility(View.GONE);
+            int padding = getResources().getDimensionPixelSize(R.dimen.file_list_item_padding);
+            vh.layoutContainer.setPadding(padding, padding, 0, padding);
+        }
         vh.text.setText(getName(data));
+
+        if (!isDir(data)) {
+            long fileSizeKB = getFileSize(data) / 1000;
+            String formattedSize = NumberFormat.getNumberInstance(Locale.US).format(fileSizeKB);
+            vh.fileSizeTextView.setText(getString(R.string.file_size_template, formattedSize));
+            vh.fileSizeTextView.setVisibility(View.VISIBLE);
+        } else {
+            if (vh.fileSizeTextView != null) {
+                vh.fileSizeTextView.setVisibility(View.GONE);
+            }
+        }
 
         if (isCheckable(data)) {
             if (mCheckedItems.contains(data)) {
@@ -698,7 +750,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
      * Currently selected items are cleared by this operation.
      */
     public void goUp() {
-        goToDir(getParent(mCurrentPath));
+        goToDir(getParent(mCurrentPath), true);
     }
 
     /**
@@ -709,7 +761,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
      */
     public void onClickDir(@NonNull View view, @NonNull DirViewHolder viewHolder) {
         if (isDir(viewHolder.file)) {
-            goToDir(viewHolder.file);
+            goToDir(viewHolder.file, true);
         }
     }
 
@@ -724,8 +776,19 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
      */
     protected boolean isItemVisible(final T file) {
         return (isDir(file) ||
-                (mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
-                (mode == MODE_NEW_FILE && allowExistingFile));
+                ((mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
+                (mode == MODE_NEW_FILE && allowExistingFile)) &&
+                (fileExtensionFilter != null && fileExtensionFilter.fileVisible(file)));
+    }
+
+//    protected boolean isItemVisible(final T file) {
+//        return (isDir(file) ||
+//                (mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
+//                (mode == MODE_NEW_FILE && allowExistingFile));
+//    }
+
+    public void goToDir(@NonNull T file) {
+        goToDir(file, true);
     }
 
     /**
@@ -737,13 +800,15 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
      *
      * @param file representing the target directory.
      */
-    public void goToDir(@NonNull T file) {
+    public void goToDir(@NonNull T file, boolean rememberPrevious) {
         if (!isLoading) {
             mCheckedItems.clear();
             mCheckedVisibleViewHolders.clear();
-            refresh(file);
+            refresh(file, rememberPrevious);
         }
     }
+
+
 
     /**
      * Long clicking a non-selectable item does nothing by default.
@@ -764,7 +829,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
      */
     public void onClickCheckable(@NonNull View view, @NonNull CheckableViewHolder viewHolder) {
         if (isDir(viewHolder.file)) {
-            goToDir(viewHolder.file);
+            goToDir(viewHolder.file, true);
         } else {
             onLongClickCheckable(view, viewHolder);
             if (singleClick) {
@@ -813,6 +878,15 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
         }
     }
 
+    public void onBackPressed() {
+        if (!mPreviousPathStack.empty()) {
+            T previousPath = mPreviousPathStack.pop();
+            if (previousPath != null) {
+                goToDir(previousPath, false);
+            }
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -855,16 +929,20 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     public class DirViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
+        public View layoutContainer;
         public View icon;
         public TextView text;
+        public TextView fileSizeTextView;
         public T file;
 
         public DirViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
+            layoutContainer = v;
             icon = v.findViewById(R.id.item_icon);
             text = (TextView) v.findViewById(android.R.id.text1);
+            fileSizeTextView = (TextView) v.findViewById(R.id.fileSize);
         }
 
         /**
@@ -891,12 +969,14 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
 
     public class CheckableViewHolder extends DirViewHolder {
 
+        public View layoutContainer;
         public CheckBox checkbox;
 
         public CheckableViewHolder(View v) {
             super(v);
             boolean nf = mode == MODE_NEW_FILE;
 
+            layoutContainer = v;
             checkbox = (CheckBox) v.findViewById(R.id.checkbox);
             checkbox.setVisibility((nf || singleClick) ? View.GONE : View.VISIBLE);
             checkbox.setOnClickListener(new View.OnClickListener() {

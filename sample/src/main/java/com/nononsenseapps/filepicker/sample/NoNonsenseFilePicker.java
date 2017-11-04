@@ -22,18 +22,21 @@ import com.dropbox.client2.android.AndroidAuthSession;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.nononsenseapps.filepicker.Utils;
+import com.nononsenseapps.filepicker.ftp.FtpPickerActivity;
 import com.nononsenseapps.filepicker.sample.databinding.ActivityNoNonsenseFilePickerBinding;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxFilePickerActivity;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxFilePickerActivity2;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxSyncHelper;
 import com.nononsenseapps.filepicker.sample.fastscroller.FastScrollerFilePickerActivity;
 import com.nononsenseapps.filepicker.sample.fastscroller.FastScrollerFilePickerActivity2;
-import com.nononsenseapps.filepicker.sample.ftp.FtpPickerActivity;
-import com.nononsenseapps.filepicker.sample.ftp.FtpPickerActivity2;
+import com.nononsenseapps.filepicker.sample.ftp.SampleFtpPickerActivity;
+import com.nononsenseapps.filepicker.sample.ftp.SampleFtpPickerActivity2;
 import com.nononsenseapps.filepicker.sample.multimedia.MultimediaPickerActivity;
 import com.nononsenseapps.filepicker.sample.multimedia.MultimediaPickerActivity2;
 import com.nononsenseapps.filepicker.sample.root.SUPickerActivity;
 import com.nononsenseapps.filepicker.sample.root.SUPickerActivity2;
+
+import org.apache.commons.net.ftp.FTPClient;
 
 import java.util.List;
 
@@ -82,10 +85,15 @@ public class NoNonsenseFilePicker extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
+                        Bundle b = new Bundle();
+                        b.putString(FtpPickerActivity.EXTRA_FTP_SERVER_IP, "debian.simnet.is");
+                        b.putInt(FtpPickerActivity.EXTRA_FTP_SERVER_PORT, FTPClient.DEFAULT_PORT);
+                        b.putString(FtpPickerActivity.EXTRA_FTP_SERVER_ROOT_DIR, "/");
+
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_FTP, FtpPickerActivity2.class);
+                            startActivity(CODE_FTP, SampleFtpPickerActivity2.class, b);
                         } else {
-                            startActivity(CODE_FTP, FtpPickerActivity.class);
+                            startActivity(CODE_FTP, SampleFtpPickerActivity.class, b);
                         }
                     }
                 });
@@ -141,6 +149,10 @@ public class NoNonsenseFilePicker extends Activity {
     }
 
     protected void startActivity(final int code, final Class<?> klass) {
+        startActivity(code, klass, new Bundle());
+    }
+
+    protected void startActivity(final int code, final Class<?> klass, Bundle extras) {
         final Intent i = new Intent(this, klass);
 
         i.setAction(Intent.ACTION_GET_CONTENT);
@@ -176,6 +188,7 @@ public class NoNonsenseFilePicker extends Activity {
 
         // This line is solely so that test classes can override intents given through UI
         i.putExtras(getIntent());
+        i.putExtras(extras);
 
         startActivityForResult(i, code);
     }

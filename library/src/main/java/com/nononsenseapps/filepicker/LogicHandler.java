@@ -36,6 +36,9 @@ public interface LogicHandler<T> {
     @NonNull
     String getName(@NonNull final T path);
 
+    @NonNull
+    long getFileSize(@NonNull final T path);
+
     /**
      * Convert the path to a URI for the return intent
      *

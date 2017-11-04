@@ -51,14 +51,19 @@ public class DropboxFilePickerFragment
         this.dbApi = api;
     }
 
-    @Override
-    protected View inflateRootView(LayoutInflater inflater, ViewGroup container) {
-        // Load the specific layout we created for dropbox/ftp
-        View view = inflater.inflate(R.layout.fragment_loading_filepicker, container, false);
-        // And bind the progress bar
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+//    @Override
+//    protected View inflateRootView(LayoutInflater inflater, ViewGroup container) {
+//        // Load the specific layout we created for dropbox/ftp
+//        View view = inflater.inflate(R.layout.fragment_loading_filepicker, container, false);
+//        // And bind the progress bar
+//        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+//
+//        return view;
+//    }
 
-        return view;
+    @Override
+    protected int getBreadcrumbPathViewLayoutResourceId() {
+        return R.layout.file_breadcrumb_path_view;
     }
 
     /**
@@ -143,6 +148,12 @@ public class DropboxFilePickerFragment
     @Override
     public String getName(@NonNull final DropboxAPI.Entry file) {
         return file.fileName();
+    }
+
+    @NonNull
+    @Override
+    public long getFileSize(@NonNull DropboxAPI.Entry path) {
+        return path.bytes;
     }
 
     @NonNull

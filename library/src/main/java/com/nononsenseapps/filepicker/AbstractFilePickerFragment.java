@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -255,8 +256,6 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
 
     private View inflateRootView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.nnf_fragment_filepicker, container, false);
-        //Toolbar toolbar = (Toolbar) view.findViewById(R.id.nnf_picker_toolbar);
-        //toolbar.addView(createBreadcrumbPathView());
 
         ViewStub stub = (ViewStub) view.findViewById(R.id.breadcrumbViewStub);
         stub.setLayoutResource(getBreadcrumbPathViewLayoutResourceId());
@@ -687,12 +686,14 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     public void onBindViewHolder(@NonNull DirViewHolder vh, int position, @NonNull T data) {
         vh.file = data;
         if (isDir(data)) {
-            vh.icon.setVisibility(View.VISIBLE);
-            vh.layoutContainer.setPadding(0, 0, 0, 0);
+            vh.folderIcon.setVisibility(View.VISIBLE);
+            vh.fileIcon.setVisibility(View.GONE);
+            vh.folderIcon.setImageResource(R.drawable.nnf_ic_folder_black_48dp);
         } else {
-            vh.icon.setVisibility(View.GONE);
-            int padding = getResources().getDimensionPixelSize(R.dimen.file_list_item_padding);
-            vh.layoutContainer.setPadding(padding, padding, 0, padding);
+            String extension = Utils.getExtension(getName(data));
+            vh.fileIcon.setImageResource(getFileIconResourceId(extension));
+            vh.fileIcon.setVisibility(View.VISIBLE);
+            vh.folderIcon.setVisibility(View.GONE);
         }
         vh.text.setText(getName(data));
 
@@ -716,6 +717,52 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
                 mCheckedVisibleViewHolders.remove(vh);
                 ((CheckableViewHolder) vh).checkbox.setChecked(false);
             }
+        }
+    }
+
+    /**
+     * Returns a drawable resource id that corresponds to the specified file extension.
+     *
+     * TODO - need to give attribution for icon pack (https://www.flaticon.com/packs/file-types) on the Github page for this library.
+     */
+    private int getFileIconResourceId(String extension) {
+        switch (extension.toLowerCase()) {
+            case "avi":
+                return R.drawable.avi;
+            case "css":
+                return R.drawable.css;
+            case "csv":
+                return R.drawable.csv;
+            case "doc":
+                return R.drawable.doc;
+            case "html":
+                return R.drawable.html;
+            case "iso":
+                return R.drawable.iso;
+            case "jpg":
+                return R.drawable.jpg;
+            case "json":
+                return R.drawable.json;
+            case "mp3":
+                return R.drawable.mp3;
+            case "mp4":
+                return R.drawable.mp4;
+            case "pdf":
+                return R.drawable.pdf;
+            case "png":
+                return R.drawable.png;
+            case "ppt":
+                return R.drawable.ppt;
+            case "txt":
+                return R.drawable.txt;
+            case "xls":
+                return R.drawable.xls;
+            case "xml":
+                return R.drawable.xml;
+            case "zip":
+                return R.drawable.zip;
+            default:
+                return R.drawable.file;
         }
     }
 
@@ -923,7 +970,8 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
             View.OnLongClickListener {
 
         public View layoutContainer;
-        public View icon;
+        public ImageView folderIcon;
+        public ImageView fileIcon;
         public TextView text;
         public TextView fileSizeTextView;
         public T file;
@@ -933,7 +981,8 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
             layoutContainer = v;
-            icon = v.findViewById(R.id.item_icon);
+            folderIcon = (ImageView) v.findViewById(R.id.folder_icon);
+            fileIcon = (ImageView) v.findViewById(R.id.file_icon);
             text = (TextView) v.findViewById(android.R.id.text1);
             fileSizeTextView = (TextView) v.findViewById(R.id.fileSize);
         }

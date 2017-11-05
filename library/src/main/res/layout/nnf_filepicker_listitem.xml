@@ -17,54 +17,77 @@
     android:nextFocusLeft="@+id/nnf_button_cancel"
     android:nextFocusRight="@+id/nnf_button_ok">
 
-    <ImageView
-        android:id="@+id/item_icon"
-        android:layout_width="?android:listPreferredItemHeight"
-        android:layout_height="?android:listPreferredItemHeight"
-        android:adjustViewBounds="true"
-        android:scaleType="center"
-        android:tint="?attr/nnf_dir_icon_color"
-        android:visibility="visible"
-        app:srcCompat="@drawable/nnf_ic_folder_black_48dp"
-        tools:ignore="ContentDescription"/>
-
-    <TextView
-        android:id="@+id/fileSize"
+    <RelativeLayout
+        android:id="@+id/iconContainer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_toRightOf="@id/item_icon"
-        android:textSize="18dp"
-        tools:text="33,212 KB"/>
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+        <ImageView
+            android:id="@+id/folder_icon"
+            android:layout_width="?android:listPreferredItemHeight"
+            android:layout_height="?android:listPreferredItemHeight"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:tint="?attr/nnf_dir_icon_color"
+            app:srcCompat="@drawable/nnf_ic_folder_black_48dp"
+            tools:ignore="ContentDescription"/>
+
+        <ImageView
+            android:id="@+id/file_icon"
+            android:layout_width="?android:listPreferredItemHeight"
+            android:layout_height="?android:listPreferredItemHeight"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/file"
+            tools:ignore="ContentDescription"/>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fileSize"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/item_icon"
-        android:orientation="horizontal">
+        android:layout_toRightOf="@id/iconContainer"
+        android:layout_centerVertical="true">
+
+        <LinearLayout
+            android:id="@+id/filenameContainer"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@android:id/text1"
+                style="?android:textAppearanceLarge"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/nnf_name"
+                tools:text="Good filename"/>
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:visibility="gone"
+                tools:ignore="RtlSymmetry"/>
+        </LinearLayout>
 
         <TextView
-            android:id="@android:id/text1"
-            style="?android:textAppearanceLarge"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@string/nnf_name"
-            tools:text="Good filename"/>
-
-        <CheckBox
-            android:id="@+id/checkbox"
+            android:id="@+id/fileSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingEnd="8dp"
-            android:paddingRight="8dp"
-            android:visibility="gone"
-            tools:ignore="RtlSymmetry"/>
-    </LinearLayout>
+            android:layout_below="@id/filenameContainer"
+            android:layout_marginBottom="2dp"
+            android:textSize="18dp"
+            tools:text="33,212 KB"/>
+    </RelativeLayout>
+
 </RelativeLayout>

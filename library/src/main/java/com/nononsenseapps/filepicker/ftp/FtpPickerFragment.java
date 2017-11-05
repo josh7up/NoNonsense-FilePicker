@@ -37,7 +37,6 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
     public static final String KEY_FTP_USERNAME = "KEY_FTP_USERNAME";
     public static final String KEY_FTP_PASSWORD = "KEY_FTP_PASSWORD";
     public static final String KEY_FTP_ROOTDIR = "KEY_FTP_ROOTDIR";
-    public static final String KEY_VISIBLE_FILE_EXTENSIONS = "KEY_VISIBLE_FILE_EXTENSIONS";
     private static final String TAG = "NoNonsenseFtp";
     private final FTPClient ftp = new FTPClient();;
     private String server;

@@ -128,9 +128,9 @@ public class MultimediaPickerFragment extends FilePickerFragment {
         final int viewType = getItemViewType(position, file);
         if (viewType == VIEWTYPE_IMAGE_CHECKABLE || viewType == VIEWTYPE_IMAGE) {
             // Need to set it to visible because the base code will set it to invisible by default
-            vh.icon.setVisibility(View.VISIBLE);
+            vh.folderIcon.setVisibility(View.VISIBLE);
             // Just load the image
-            Glide.with(this).load(file).into((ImageView) vh.icon);
+            Glide.with(this).load(file).into((ImageView) vh.folderIcon);
         }
     }
 }

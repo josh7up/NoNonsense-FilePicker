@@ -776,16 +776,9 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
      */
     protected boolean isItemVisible(final T file) {
         return (isDir(file) ||
-                ((mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
-                (mode == MODE_NEW_FILE && allowExistingFile)) &&
-                (fileExtensionFilter != null && fileExtensionFilter.fileVisible(file)));
+                (mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
+                (mode == MODE_NEW_FILE && allowExistingFile));
     }
-
-//    protected boolean isItemVisible(final T file) {
-//        return (isDir(file) ||
-//                (mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
-//                (mode == MODE_NEW_FILE && allowExistingFile));
-//    }
 
     public void goToDir(@NonNull T file) {
         goToDir(file, true);

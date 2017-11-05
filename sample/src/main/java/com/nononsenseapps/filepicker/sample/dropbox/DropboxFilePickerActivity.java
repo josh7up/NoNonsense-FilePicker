@@ -14,8 +14,6 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
-import com.nononsenseapps.filepicker.Utils;
-
 
 public class DropboxFilePickerActivity
             extends AbstractFilePickerActivity<DropboxAPI.Entry> {
@@ -50,10 +48,5 @@ public class DropboxFilePickerActivity
         fragment.setArgs(startPath, mode, allowMultiple, allowCreateDir,
                 allowExistingFile, singleClick);
         return fragment;
-    }
-
-    @Override
-    public boolean fileVisible(DropboxAPI.Entry item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.fileName()).toLowerCase());
     }
 }

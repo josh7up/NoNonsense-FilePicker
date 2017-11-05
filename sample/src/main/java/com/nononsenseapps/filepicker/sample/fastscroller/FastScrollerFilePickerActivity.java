@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
-import com.nononsenseapps.filepicker.Utils;
 
 import java.io.File;
 
@@ -34,10 +33,5 @@ public class FastScrollerFilePickerActivity extends AbstractFilePickerActivity<F
         fragment.setArgs(startPath != null ? startPath : Environment.getExternalStorageDirectory().getPath(),
                 mode, allowMultiple, allowCreateDir, allowExistingFile, singleClick);
         return fragment;
-    }
-
-    @Override
-    public boolean fileVisible(File item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
     }
 }

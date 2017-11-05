@@ -49,7 +49,7 @@
                 android:resource="@xml/nnf_provider_paths"/>
         </provider>
         <activity
-            android:name="com.nononsenseapps.filepicker.FilePickerActivity"
+            android:name=".file.FilteredFilePickerActivity"
             android:label="@string/title_activity_no_nonsense_file_picker"
             android:theme="@style/SampleTheme">
             <intent-filter>
@@ -59,7 +59,7 @@
         </activity>
 
         <activity
-            android:name=".FilePickerActivity2"
+            android:name=".file.FilteredFilePickerActivity2"
             android:label="@string/title_activity_no_nonsense_file_picker"
             android:theme="@style/SampleThemeLight">
             <intent-filter>
@@ -130,11 +130,11 @@
 
         <!-- FtpPickers -->
         <activity
-            android:name=".ftp.SampleFtpPickerActivity"
+            android:name=".ftp.FilteredFtpPickerActivity"
             android:label="@string/title_activity_no_nonsense_file_picker"
             android:theme="@style/SampleTheme" />
         <activity
-            android:name=".ftp.SampleFtpPickerActivity2"
+            android:name=".ftp.FilteredFtpPickerActivity2"
             android:label="@string/title_activity_no_nonsense_file_picker"
             android:theme="@style/SampleThemeLight" />
 

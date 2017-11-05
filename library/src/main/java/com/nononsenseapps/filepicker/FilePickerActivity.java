@@ -30,9 +30,4 @@ public class FilePickerActivity extends AbstractFilePickerActivity<File> {
                 mode, allowMultiple, allowCreateDir, allowExistingFile, singleClick);
         return fragment;
     }
-
-    @Override
-    public boolean fileVisible(File item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
-    }
 }

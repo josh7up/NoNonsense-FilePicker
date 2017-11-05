@@ -7,10 +7,9 @@
 package com.nononsenseapps.filepicker.sample.ftp;
 
 
-import com.nononsenseapps.filepicker.ftp.FtpPickerActivity;
-
 /**
- * An example implementation of an FTP file-picker
+ * This is a copy of the included activity for the sole purpose
+ * of being to show you a second example theme
  */
-public class SampleFtpPickerActivity extends FtpPickerActivity {
+public class FilteredFtpPickerActivity2 extends FilteredFtpPickerActivity {
 }

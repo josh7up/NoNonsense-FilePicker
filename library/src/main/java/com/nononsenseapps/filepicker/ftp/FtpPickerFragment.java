@@ -26,8 +26,6 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This example allows you to browse the files on an FTP-server
@@ -41,7 +39,7 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
     public static final String KEY_FTP_ROOTDIR = "KEY_FTP_ROOTDIR";
     public static final String KEY_VISIBLE_FILE_EXTENSIONS = "KEY_VISIBLE_FILE_EXTENSIONS";
     private static final String TAG = "NoNonsenseFtp";
-    private final FTPClient ftp;
+    private final FTPClient ftp = new FTPClient();;
     private String server;
     private int port;
     private String username;
@@ -50,8 +48,6 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
     private String rootDir = "/";
 
     public FtpPickerFragment() {
-        super();
-        ftp = new FTPClient();
     }
 
     @Override
@@ -59,20 +55,20 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
         return R.layout.ftp_file_breadcrumb_path_view;
     }
 
-    public static AbstractFilePickerFragment<FtpFile> newInstance(String startPath, int mode,
-                                                                  boolean allowMultiple,
-                                                                  boolean allowCreateDir,
-                                                                  boolean allowExistingFile,
-                                                                  boolean singleClick,
-                                                                  String server, int port,
-                                                                  String username,
-                                                                  String password,
-                                                                  String rootDir) {
-        FtpPickerFragment fragment = new FtpPickerFragment();
-        // Add arguments
-        fragment.setArgs(startPath, mode, allowMultiple, allowCreateDir,
-                allowExistingFile, singleClick);
-        Bundle args = fragment.getArguments();
+    public void setArgs(String startPath,
+                        int mode,
+                        boolean allowMultiple,
+                        boolean allowCreateDir,
+                        boolean allowExistingFile,
+                        boolean singleClick,
+                        String server,
+                        int port,
+                        String username,
+                        String password,
+                        String rootDir) {
+
+        setArgs(startPath, mode, allowMultiple, allowCreateDir, allowExistingFile, singleClick);
+        Bundle args = getArguments();
 
         // Add ftp related stuff
         args.putString(KEY_FTP_ROOTDIR, rootDir);
@@ -82,8 +78,6 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
             args.putString(KEY_FTP_USERNAME, username);
             args.putString(KEY_FTP_PASSWORD, password);
         }
-
-        return fragment;
     }
 
     @Override

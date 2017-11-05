@@ -4,14 +4,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package com.nononsenseapps.filepicker.sample;
+package com.nononsenseapps.filepicker.sample.file;
 
 
 import com.nononsenseapps.filepicker.FilePickerActivity;
+import com.nononsenseapps.filepicker.sample.file.FilteredFilePickerActivity;
 
 /**
  * This is a copy of the included activity for the sole purpose
  * of being to show you a second example theme
  */
-public class FilePickerActivity2 extends FilePickerActivity {
+public class FilteredFilePickerActivity2 extends FilteredFilePickerActivity {
 }

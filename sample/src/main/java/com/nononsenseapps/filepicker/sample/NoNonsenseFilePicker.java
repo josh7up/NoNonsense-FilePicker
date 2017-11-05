@@ -29,8 +29,10 @@ import com.nononsenseapps.filepicker.sample.dropbox.DropboxFilePickerActivity2;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxSyncHelper;
 import com.nononsenseapps.filepicker.sample.fastscroller.FastScrollerFilePickerActivity;
 import com.nononsenseapps.filepicker.sample.fastscroller.FastScrollerFilePickerActivity2;
-import com.nononsenseapps.filepicker.sample.ftp.SampleFtpPickerActivity;
-import com.nononsenseapps.filepicker.sample.ftp.SampleFtpPickerActivity2;
+import com.nononsenseapps.filepicker.sample.file.FilteredFilePickerActivity2;
+import com.nononsenseapps.filepicker.sample.file.FilteredFilePickerActivity;
+import com.nononsenseapps.filepicker.sample.ftp.FilteredFtpPickerActivity;
+import com.nononsenseapps.filepicker.sample.ftp.FilteredFtpPickerActivity2;
 import com.nononsenseapps.filepicker.sample.multimedia.MultimediaPickerActivity;
 import com.nononsenseapps.filepicker.sample.multimedia.MultimediaPickerActivity2;
 import com.nononsenseapps.filepicker.sample.root.SUPickerActivity;
@@ -63,10 +65,14 @@ public class NoNonsenseFilePicker extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
+                        Bundle bundle = new Bundle();
+                        //bundle.putStringArrayList(FilteredFilePickerActivity.EXTRA_VISIBLE_FILE_EXTENSIONS, new ArrayList<>(Arrays.asList("txt")));
+
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_SD, FilePickerActivity2.class);
+                            startActivity(CODE_SD, FilteredFilePickerActivity2.class, bundle);
                         } else {
-                            startActivity(CODE_SD, FilePickerActivity.class);
+
+                            startActivity(CODE_SD, FilteredFilePickerActivity.class, bundle);
                         }
                     }
                 });
@@ -91,11 +97,12 @@ public class NoNonsenseFilePicker extends Activity {
                         b.putString(FtpPickerActivity.EXTRA_FTP_SERVER_IP, "debian.simnet.is");
                         b.putInt(FtpPickerActivity.EXTRA_FTP_SERVER_PORT, FTPClient.DEFAULT_PORT);
                         b.putString(FtpPickerActivity.EXTRA_FTP_SERVER_ROOT_DIR, "/");
+                        //b.putStringArrayList(FilteredFtpPickerActivity.EXTRA_VISIBLE_FILE_EXTENSIONS, new ArrayList<>(Arrays.asList("txt")));
 
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_FTP, SampleFtpPickerActivity2.class, b);
+                            startActivity(CODE_FTP, FilteredFtpPickerActivity2.class, b);
                         } else {
-                            startActivity(CODE_FTP, SampleFtpPickerActivity.class, b);
+                            startActivity(CODE_FTP, FilteredFtpPickerActivity.class, b);
                         }
                     }
                 });

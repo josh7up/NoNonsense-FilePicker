@@ -51,7 +51,7 @@ import java.util.List;
  * @param <T>
  */
 public abstract class AbstractFilePickerActivity<T> extends AppCompatActivity
-        implements AbstractFilePickerFragment.OnFilePickedListener, FileExtensionFilter<T> {
+        implements AbstractFilePickerFragment.OnFilePickedListener {
     public static final String EXTRA_START_PATH =
             "nononsense.intent" + ".START_PATH";
     public static final String EXTRA_MODE = "nononsense.intent.MODE";
@@ -65,7 +65,6 @@ public abstract class AbstractFilePickerActivity<T> extends AppCompatActivity
     public static final String EXTRA_ALLOW_EXISTING_FILE =
             "android.intent.extra" + ".ALLOW_EXISTING_FILE";
     public static final String EXTRA_PATHS = "nononsense.intent.PATHS";
-    public static final String EXTRA_VISIBLE_FILE_EXTENSIONS = "nononsense.intent" + ".VISIBLE_FILE_EXTENSIONS";
     public static final int MODE_FILE = AbstractFilePickerFragment.MODE_FILE;
     public static final int MODE_FILE_AND_DIR =
             AbstractFilePickerFragment.MODE_FILE_AND_DIR;
@@ -78,7 +77,6 @@ public abstract class AbstractFilePickerActivity<T> extends AppCompatActivity
     protected boolean allowMultiple = false;
     private boolean allowExistingFile = true;
     protected boolean singleClick = false;
-    protected List<String> visibleFileExtensions;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -99,9 +97,6 @@ public abstract class AbstractFilePickerActivity<T> extends AppCompatActivity
                     intent.getBooleanExtra(EXTRA_ALLOW_EXISTING_FILE, allowExistingFile);
             singleClick =
                     intent.getBooleanExtra(EXTRA_SINGLE_CLICK, singleClick);
-            visibleFileExtensions = getIntent().hasExtra(EXTRA_VISIBLE_FILE_EXTENSIONS) ?
-                                    getIntent().getStringArrayListExtra(EXTRA_VISIBLE_FILE_EXTENSIONS) :
-                                    new ArrayList<String>();
         }
 
         FragmentManager fm = getSupportFragmentManager();

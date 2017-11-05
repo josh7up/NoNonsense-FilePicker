@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
-import com.nononsenseapps.filepicker.Utils;
 
 import org.apache.commons.net.ftp.FTP;
 
@@ -26,11 +25,11 @@ public class FtpPickerActivity extends AbstractFilePickerActivity<FtpFile> {
     public static final String EXTRA_FTP_SERVER_PASSWORD = "extra_ftp_server_password";
     public static final String EXTRA_FTP_SERVER_ROOT_DIR = "extra_ftp_server_root_dir";
 
-    private String serverIp;
-    private int serverPort;
-    private String username;
-    private String password;
-    private String serverRootDir;
+    protected String serverIp;
+    protected int serverPort;
+    protected String username;
+    protected String password;
+    protected String serverRootDir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,8 @@ public class FtpPickerActivity extends AbstractFilePickerActivity<FtpFile> {
         boolean allowExistingFile,
         boolean singleClick) {
 
-        return FtpPickerFragment.newInstance(
+        FtpPickerFragment fragment = new FtpPickerFragment();
+        fragment.setArgs(
                 startPath,
                 mode,
                 allowMultiple,
@@ -63,10 +63,6 @@ public class FtpPickerActivity extends AbstractFilePickerActivity<FtpFile> {
                 username,
                 password,
                 serverRootDir);
-    }
-
-    @Override
-    public boolean fileVisible(FtpFile item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
+        return fragment;
     }
 }

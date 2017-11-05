@@ -31,8 +31,8 @@ public class SUPickerActivity extends AbstractFilePickerActivity<File> {
         return fragment;
     }
 
-    @Override
-    public boolean fileVisible(File item) {
-        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
-    }
+//    @Override
+//    public boolean fileVisible(File item) {
+//        return visibleFileExtensions.isEmpty() || visibleFileExtensions.contains(Utils.getExtension(item.getName()).toLowerCase());
+//    }
 }

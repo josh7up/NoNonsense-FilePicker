@@ -7,8 +7,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 27
+    buildToolsVersion "26.0.2"
 
     dataBinding {
         enabled = true
@@ -24,8 +24,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 11
-        targetSdkVersion 24
+        minSdkVersion 14
+        targetSdkVersion 27
         versionCode gitCommitCount
         versionName gitTag
         archivesBaseName = "nononsensefilepicker-sample-${gitTag}".toString()
@@ -57,7 +57,7 @@ dependencies {
     compile project(':library')
 
     // Image loading sample
-    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 
     // FTP browser sample
     compile 'commons-net:commons-net:3.3'

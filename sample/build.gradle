@@ -7,8 +7,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "26.0.2"
+    compileSdkVersion rootProject.ext.configuration.compileSdk
+    buildToolsVersion rootProject.ext.configuration.buildTools
 
     dataBinding {
         enabled = true
@@ -24,8 +24,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 27
+        minSdkVersion rootProject.ext.configuration.minSdk
+        targetSdkVersion rootProject.ext.configuration.targetSdk
         versionCode gitCommitCount
         versionName gitTag
         archivesBaseName = "nononsensefilepicker-sample-${gitTag}".toString()

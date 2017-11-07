@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 public abstract class AbstractBreadcrumbPathView<T> extends LinearLayout {
 
-    private TextView rootPathTextView;
     private LinearLayout breadcrumbContainer;
     private LayoutInflater layoutInflater;
     private BreadcrumbListener breadcrumbListener;
@@ -19,9 +18,8 @@ public abstract class AbstractBreadcrumbPathView<T> extends LinearLayout {
         super(context, attrs);
         inflate(context, R.layout.breadcrumb_path, this);
         layoutInflater = LayoutInflater.from(context);
-        breadcrumbContainer = (LinearLayout) findViewById(R.id.breadcrumbContainer);
-        rootPathTextView = (TextView) findViewById(R.id.rootPathTextView);
-
+        breadcrumbContainer = findViewById(R.id.breadcrumbContainer);
+        TextView rootPathTextView = findViewById(R.id.rootPathTextView);
         rootPathTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,7 +46,7 @@ public abstract class AbstractBreadcrumbPathView<T> extends LinearLayout {
                 pathToCurrentBreadcrumbPart += pathParts[i] + "/";
                 breadcrumbPathPartView.setTag(pathToCurrentBreadcrumbPart);
 
-                TextView pathPartValueTextView = (TextView) breadcrumbPathPartView.findViewById(R.id.pathPartValue);
+                TextView pathPartValueTextView = breadcrumbPathPartView.findViewById(R.id.pathPartValue);
                 pathPartValueTextView.setText(pathParts[i]);
 
                 breadcrumbPathPartView.setOnClickListener(new OnClickListener() {

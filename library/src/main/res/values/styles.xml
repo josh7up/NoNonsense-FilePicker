@@ -14,6 +14,7 @@
         <item name="nnf_separator_color">@color/nnf_dark_separator_color</item>
         <item name="nnf_save_icon_color">?attr/colorAccent</item>
         <item name="nnf_dir_icon_color">?attr/colorAccent</item>
+        <item name="nnf_file_icon_color">@android:color/transparent</item>
 
         <!-- These are important. Handled by toolbar. -->
         <item name="windowActionBar">false</item>
@@ -26,6 +27,7 @@
         <item name="nnf_separator_color">@color/nnf_light_separator_color</item>
         <item name="nnf_save_icon_color">?attr/colorAccent</item>
         <item name="nnf_dir_icon_color">?attr/colorAccent</item>
+        <item name="nnf_file_icon_color">@android:color/transparent</item>
 
         <!-- These are important. Handled by toolbar. -->
         <item name="windowActionBar">false</item>

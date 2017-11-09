@@ -41,6 +41,7 @@
             android:scaleType="fitCenter"
             android:padding="8dp"
             android:visibility="gone"
+            android:tint="?attr/nnf_file_icon_color"
             app:srcCompat="@drawable/file"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>

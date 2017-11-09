@@ -12,6 +12,7 @@
         <item name="colorAccent">@color/accent2</item>
 
         <item name="alertDialogTheme">@style/SampleAlertDialogTheme</item>
+        <item name="nnf_file_icon_color">#22ffc096</item>
     </style>
 
     <style name="SampleThemeLight" parent="NNF_BaseTheme.Light">

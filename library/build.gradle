@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -29,81 +28,44 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:${rootProject.ext.configuration.supportLibrary}"
-    compile "com.android.support:support-v4:${rootProject.ext.configuration.supportLibrary}"
-    compile "com.android.support:recyclerview-v7:${rootProject.ext.configuration.supportLibrary}"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.configuration.supportLibrary}"
+    implementation "com.android.support:support-v4:${rootProject.ext.configuration.supportLibrary}"
+    implementation "com.android.support:recyclerview-v7:${rootProject.ext.configuration.supportLibrary}"
 
-    testCompile 'junit:junit:4.12'
-    compile 'commons-net:commons-net:3.3'
+    testImplementation 'junit:junit:4.12'
+    implementation 'commons-net:commons-net:3.3'
 }
 
-apply from: 'https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.0.0/gradle-android-javadocs.gradle'
+apply from: 'https://raw.githubusercontent.com/josh7up/AndroidMavenBintray/1.0.0/gradle-maven-bintray.gradle'
 
-def myGroupId = 'com.github.josh7up'
-def myArtifactId = 'filepicker'
-def myVersionNumber = '4.2.0'
-def myUsername = 'josh7up'
-def myGitUrl = 'https://github.com/josh7up/NoNonsense-FilePicker'
+def groupId = 'com.github.josh7up'
+def artifactId = 'filepicker'
+def versionNumber = rootProject.ext.gitTag
+def gitUrl = 'https://github.com/josh7up/NoNonsense-FilePicker'
 
-group = myGroupId
-version = myVersionNumber
-// Important for ensuring this library project is not uploaded to bintray as a sub-project.
-archivesBaseName = myArtifactId
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            name myArtifactId
-            description 'A file/directory-picker for android. Implemented as a library project.'
-            url myGitUrl
-            inceptionYear '2017'
-
-            packaging 'aar'
-            groupId myGroupId
-            artifactId myArtifactId
-            version myVersionNumber
-
-            licenses {
-                license {
-                    name 'Mozilla Public License Version 2.0'
-                    url 'http://mozilla.org/MPL/2.0'
-                    distribution 'repo'
-                }
-            }
-            scm {
-                connection "${myGitUrl}.git"
-                url myGitUrl
-
-            }
-            developers {
-                developer {
-                    id = myUsername
-                    name 'Josh'
-                }
-            }
-        }
-    }
-}
+configureMavenInstall([
+        groupId: groupId,
+        artifactId: artifactId,
+        versionNumber: versionNumber,
+        developerId: 'josh7up',
+        gitUrl: gitUrl,
+        projectDescription: 'A file/directory-picker for android. Implemented as a library project.',
+        projectInceptionYear: 2017,
+        licenseName: 'Mozilla Public License Version 2.0',
+        licenseUrl: 'http://mozilla.org/MPL/2.0',
+        developerName: 'Josh Feldman'
+])
 
 Properties bintrayProperties = new Properties()
 bintrayProperties.load(project.rootProject.file('bintray.properties').newDataInputStream())
 
-bintray {
-    user = bintrayProperties.getProperty('user')
-    key = bintrayProperties.get('key')
-    configurations = ['archives']
-    pkg {
-        repo = 'android'
-        name = myArtifactId
-        licenses = ['MPL-2.0']
-        vcsUrl = 'https://github.com/bintray/gradle-bintray-plugin.git'
-        publish = true
-        version {
-            name = myVersionNumber
-            desc = "${myArtifactId} ${myVersionNumber}"
-            released = new Date()
-            vcsTag = myVersionNumber
-        }
-    }
-}
+configureBintrayUpload(
+        user: bintrayProperties.getProperty('user'),
+        key: bintrayProperties.get('key'),
+        repoName: 'android',
+        artifactId: artifactId,
+        licenseId: 'MPL-2.0',
+        gitUrl: gitUrl,
+        versionNumber: versionNumber
+)

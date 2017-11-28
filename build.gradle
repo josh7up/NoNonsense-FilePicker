@@ -10,17 +10,21 @@ ext {
         'minSdk': 14,
         'compileSdk': 27,
         'targetSdk': 27,
-        'supportLibrary': '27.0.0',
+        'supportLibrary': '27.0.1',
         'buildTools': '27.0.1'
     ]
+
+    gitTag = '4.2.1'
+    gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 }
 
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
@@ -29,13 +33,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
     }
-}
-
-ext {
-    gitTag = '4.1.0'
-    gitCommitCount = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 }
